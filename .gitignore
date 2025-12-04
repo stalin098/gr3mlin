@@ -1,0 +1,15 @@
+# Node.js
+node_modules/
+npm-debug.log
+
+# Android
+.gradle/
+local.properties
+.idea/
+build/
+app/build/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db

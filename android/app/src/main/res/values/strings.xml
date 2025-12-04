@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Gremlin</string>
+    <string name="summon_gremlin">Summon Gremlin</string>
+    <string name="type_message">Say something...</string>
+    <string name="send">Send</string>
+    <string name="admin_dashboard">Admin Dashboard</string>
+    <string name="rate_funny">Funny</string>
+    <string name="rate_mid">Mid</string>
+</resources>
