@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/imgGremlinHead"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:src="@mipmap/ic_launcher_round" 
+        android:background="@drawable/bg_bubble_gremlin"
+        android:padding="8dp"
+        android:elevation="8dp" />
+        
+    <!-- In a real app, we'd have a popup menu here too, but for now just the head -->
+</FrameLayout>
