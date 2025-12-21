@@ -41,35 +41,37 @@ jobs:
       - name: Increment versionCode and versionName
         id: versioning
         run: |
-          VERSION_CODE=$(grep versionCode app/build.gradle | awk '{print $2}')
-          VERSION_NAME=$(grep versionName app/build.gradle | awk -F'"' '{print $2}')
+          VERSION_CODE=$(grep 'versionCode =' app/build.gradle.kts | awk '{print $3}')
+          VERSION_NAME=$(grep 'versionName =' app/build.gradle.kts | awk -F'"' '{print $2}')
           NEW_CODE=$((VERSION_CODE + 1))
           NEW_NAME="${VERSION_NAME%.*}.$(( ${VERSION_NAME##*.} + 1 ))"
           echo "New versionCode: $NEW_CODE"
           echo "New versionName: $NEW_NAME"
-          sed -i "s/versionCode ${VERSION_CODE}/versionCode ${NEW_CODE}/" app/build.gradle
-          sed -i "s/versionName \"${VERSION_NAME}\"/versionName \"${NEW_NAME}\"/" app/build.gradle
+          sed -i "s/versionCode = ${VERSION_CODE}/versionCode = ${NEW_CODE}/" app/build.gradle.kts
+          sed -i "s/versionName = \"${VERSION_NAME}\"/versionName = \"${NEW_NAME}\"/" app/build.gradle.kts
           echo "version_code=$NEW_CODE" >> $GITHUB_OUTPUT
           echo "version_name=$NEW_NAME" >> $GITHUB_OUTPUT
+        working-directory: gremlin_app/android
 
       # -------------------------------
       # Step 5: Build Debug APK
       # -------------------------------
       - name: Build Debug APK
         run: gradle assembleDebug --stacktrace
+        working-directory: gremlin_app/android
 
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4
         with:
           name: gremlin-debug-apk
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: gremlin_app/android/app/build/outputs/apk/debug/app-debug.apk
 
       # -------------------------------
       # Step 6: Decode Release Keystore
       # -------------------------------
       - name: Decode Release Keystore
         run: |
-          echo ${{ secrets.KEYSTORE_BASE64 }} | base64 --decode > release.keystore
+          echo ${{ secrets.KEYSTORE_BASE64 }} | base64 --decode > gremlin_app/android/release.keystore
 
       # -------------------------------
       # Step 7: Build Release APK
@@ -80,12 +82,13 @@ jobs:
                                      -Pandroid.injected.signing.key.alias=${{ secrets.KEY_ALIAS }} \
                                      -Pandroid.injected.signing.key.password=${{ secrets.KEY_PASSWORD }} \
                                      --stacktrace
+        working-directory: gremlin_app/android
 
       - name: Upload Release APK
         uses: actions/upload-artifact@v4
         with:
           name: gremlin-release-apk
-          path: app/build/outputs/apk/release/app-release.apk
+          path: gremlin_app/android/app/build/outputs/apk/release/app-release.apk
 
       # -------------------------------
       # Step 8: Create GitHub Release
@@ -101,7 +104,7 @@ jobs:
       - name: Upload Release APK to GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          files: app/build/outputs/apk/release/app-release.apk
+          files: gremlin_app/android/app/build/outputs/apk/release/app-release.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -109,4 +112,4 @@ jobs:
       # Step 9: Cleanup
       # -------------------------------
       - name: Remove Keystore
-        run: rm -f release.keystore
+        run: rm -f gremlin_app/android/release.keystore

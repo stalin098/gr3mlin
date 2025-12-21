@@ -28,8 +28,5 @@ jobs:
         gradle-version: '8.4'
         
     - name: Build with Gradle
-      run: |
-        ls -la
-        cd android || echo "Android directory not found!"
-        ls -la
-        gradle build --no-daemon
+      run: gradle build --no-daemon
+      working-directory: gremlin_app/android
